@@ -2,6 +2,10 @@ import { motion } from 'framer-motion'
 import React, { useEffect, useState } from 'react'
 import './About.scss'
 import { images } from '../../constants'
+import { urlFor, client } from '../../client'
+import { AppWrap, MotionWrap } from '../../wrapper'
+
+
 
 
 const about = [
@@ -28,6 +32,14 @@ const about = [
 ]
 
 const About = () => {
+  const [about, setAbout] = useState([]);
+  useEffect( () => {
+    const aboutQuery = '*[_type == "abouts"]';
+    client.fetch(aboutQuery)
+    .then( (data) => {
+      setAbout(data)
+    })
+  }, [])
   return (
     <>
       <h2 className='head-text'> I Know that <span>Good Devlopment </span> <br /> means <span>Good Busness</span> </h2>
@@ -42,7 +54,7 @@ const About = () => {
             key={about.title + index}
           >
 
-            <img src={about.imgUrl} alt={about.title}/>
+            <img src={urlFor(about.imgUrl)} alt={about.title}/>
             <h2 className='bold-text' style={ {marginTop: 20}}> {about.title}</h2>
             <p className='text' style={ {marginTop: 20}}> {about.description}</p>
 
@@ -53,4 +65,8 @@ const About = () => {
   )
 }
 
-export default About
+export default AppWrap(
+  MotionWrap(About, 'app__about'), 
+  'about', 
+  'app__whitebg'
+  )
